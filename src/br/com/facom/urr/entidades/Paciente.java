@@ -1,6 +1,7 @@
 package br.com.facom.urr.entidades;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Paciente implements Serializable{
 
@@ -14,7 +15,7 @@ public class Paciente implements Serializable{
 	private String cpf;
 	private String rg;
 	private String endereco;
-	private String dataNascimento;
+	private Date dataNascimento;
 	private String telefone;
 	private String numeroProntuario;
 	public Integer getId() {
@@ -47,10 +48,11 @@ public class Paciente implements Serializable{
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
-	public String getDataNascimento() {
+	
+	public Date getDataNascimento() {
 		return dataNascimento;
 	}
-	public void setDataNascimento(String dataNascimento) {
+	public void setDataNascimento(Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
 	public String getTelefone() {

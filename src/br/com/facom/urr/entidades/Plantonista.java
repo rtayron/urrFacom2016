@@ -13,6 +13,8 @@ public class Plantonista implements Serializable{
 	private String nome;
 	private String telefone;
 	private String lotacao;
+	
+	
 	public Integer getId() {
 		return id;
 	}
