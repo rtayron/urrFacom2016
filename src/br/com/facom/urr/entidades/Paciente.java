@@ -78,8 +78,16 @@ public class Paciente implements Serializable{
 	public void setNumeroProntuario(String numeroProntuario) {
 		this.numeroProntuario = numeroProntuario;
 	}
+
+	@Override
+	public String toString() {
+		return "Paciente [nome=" + nome + ", cpf=" + cpf + "]";
+	}
 	
 	/*getters and setters*/
+	
+	
+	
 	
 	
 
