@@ -18,6 +18,17 @@ public class Paciente implements Serializable{
 	private Date dataNascimento;
 	private String telefone;
 	private String numeroProntuario;
+	
+	public Paciente(){	
+	}
+
+	public Paciente(int id, String nome, String rg, String cpf) {
+		this.id = id;
+		this.nome = nome;
+		this.rg = rg;
+		this.cpf = cpf;
+	}
+
 	public Integer getId() {
 		return id;
 	}

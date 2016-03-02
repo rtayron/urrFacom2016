@@ -2,7 +2,7 @@ package br.com.facom.urr.entidades;
 
 import java.io.Serializable;
 
-public class UpaCrd implements Serializable{
+public class UpaCrs implements Serializable{
 
 	/**
 	 * 

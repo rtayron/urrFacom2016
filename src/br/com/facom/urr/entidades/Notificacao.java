@@ -17,7 +17,7 @@ public class Notificacao implements Serializable{
 	
 	private Paciente paciente;
 	private Plantonista plantonista;
-	private UpaCrd upaCrd;
+	private UpaCrs upaCrs;
 	public Integer getId() {
 		return id;
 	}
@@ -54,11 +54,11 @@ public class Notificacao implements Serializable{
 	public void setPlantonista(Plantonista plantonista) {
 		this.plantonista = plantonista;
 	}
-	public UpaCrd getUpaCrd() {
-		return upaCrd;
+	public UpaCrs getUpaCrs() {
+		return upaCrs;
 	}
-	public void setUpaCrd(UpaCrd upaCrd) {
-		this.upaCrd = upaCrd;
+	public void setUpaCrs(UpaCrs upaCrs) {
+		this.upaCrs = upaCrs;
 	}
 	
 	/*getters and setters*/
