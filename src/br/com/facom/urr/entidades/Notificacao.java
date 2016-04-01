@@ -1,6 +1,8 @@
 package br.com.facom.urr.entidades;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class Notificacao implements Serializable{
@@ -60,6 +62,9 @@ public class Notificacao implements Serializable{
 	public void setUpaCrs(UpaCrs upaCrs) {
 		this.upaCrs = upaCrs;
 	}
+	
+	
+
 	
 	/*getters and setters*/
 	

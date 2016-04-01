@@ -1,6 +1,8 @@
 package br.com.facom.urr.entidades;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UpaCrs implements Serializable{
 

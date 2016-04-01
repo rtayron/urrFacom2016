@@ -1,6 +1,8 @@
 package br.com.facom.urr.entidades;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Plantonista implements Serializable{
 
@@ -39,8 +41,7 @@ public class Plantonista implements Serializable{
 	public void setLotacao(String lotacao) {
 		this.lotacao = lotacao;
 	}
-	
-	/*getters and Setters*/
+
 	
 
 }

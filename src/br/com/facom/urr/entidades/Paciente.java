@@ -1,11 +1,11 @@
 package br.com.facom.urr.entidades;
 
-import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.util.Date;
 
-public class Paciente implements Serializable{
+import br.com.facom.urr.dao.iface.Entidade;
+
+public class Paciente implements Entidade{
 
 	/**
 	 * 
@@ -88,9 +88,8 @@ public class Paciente implements Serializable{
 	public void setNumeroProntuario(String numeroProntuario) {
 		this.numeroProntuario = numeroProntuario;
 	}
-	
-	/*getters and setters*/
-	
+
+
 	
 
 }

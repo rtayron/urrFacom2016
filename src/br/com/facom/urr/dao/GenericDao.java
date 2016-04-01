@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.lang.reflect.ParameterizedType;
 
-import br.com.facom.urr.dao.iface.IGenericDao;
+import br.com.facom.urr.dao.iface.Entidade;
+import br.com.facom.urr.dao.iface.*;
 import br.com.facom.urr.entidades.Paciente;
 import exception.DaoException;
 
@@ -20,7 +21,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 	private static Connection connection;
 	private static Statement st;
 	private static ResultSet rs;
-	protected static String banco = "jdbc:sqlite:C:\\Users\\Tayron\\git\\urrFacom2016\\URR.sqlite";
+	protected static String banco = "jdbc:sqlite:/home/rtsouza/git/urrFacom2016/URR.sqlite";
 	private Class<T> persistentClass;
 	
 	 
@@ -28,8 +29,7 @@ public class GenericDao<T> implements IGenericDao<T>{
 		try {
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection(base);
-			this.persistentClass = (Class<T>) ((ParameterizedType) 
-				      getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+			this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new DaoException(e.getMessage());
 		}
@@ -40,14 +40,18 @@ public class GenericDao<T> implements IGenericDao<T>{
 	public ArrayList<T> all() throws SQLException {
 		st = connection.createStatement();
 		rs = st.executeQuery("Select * from "+persistentClass.getSimpleName());
-		List<T> resultado = new ArrayList<>();
+		ArrayList<T> resultado = new ArrayList<>();
 		
 		while (rs.next()) {
-
+			
+			resultado.add((T) rs.getMetaData().unwrap(Entidade.class));
 		}
 		
-		return null;
+		return resultado;
 	}
+	
+	
+
 
 	@Override
 	public <C, V> ArrayList<T> findBy(Map<C, V> parametros) throws SQLException {
@@ -72,26 +76,11 @@ public class GenericDao<T> implements IGenericDao<T>{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	
 	public static void main(String [] args) throws DaoException, SQLException{
 		GenericDao<Paciente> dao = new GenericDao<Paciente>(banco){};
+		dao.all();
 		
-		st = connection.createStatement();
-		rs = st.executeQuery("SELECT * FROM Paciente");
-		
-		ArrayList<Paciente> pacientes = new ArrayList<Paciente>();
-		
-		while(rs.next()) {
-			int id = rs.getInt("id");
-			String nome = rs.getString("nome");
-			String rg = rs.getString("rg");
-			String cpf = rs.getString("cpf");
-			Paciente paciente = new Paciente(id, nome, rg, cpf);
-			
-			pacientes.add(paciente);
-		}
-		
-		st.close();
 	}
 }
