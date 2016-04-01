@@ -1,6 +1,8 @@
 package br.com.facom.urr.entidades;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 
 public class Paciente implements Serializable{
@@ -28,6 +30,14 @@ public class Paciente implements Serializable{
 		this.rg = rg;
 		this.cpf = cpf;
 	}
+	
+//	public Paciente(ResultSet rs) throws SQLException{
+//		this.id = rs.getInt("id");
+//		this.cpf = rs.getString("cpf");
+//		this.dataNascimento = rs.getDate("dataNascimento");
+//		this.telefone = rs.getString("telefone");
+//		this.numeroProntuario = rs.getString("numeroProntuario");
+//	}
 
 	public Integer getId() {
 		return id;
