@@ -3,8 +3,15 @@ package br.com.facom.urr.entidades;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Plantonista implements Serializable{
+import br.com.facom.urr.dao.NotificacaoDao;
+import br.com.facom.urr.dao.iface.Entidade;
+import exception.DaoException;
+
+public class Plantonista implements Entidade{
 
 	/**
 	 * 
@@ -15,6 +22,7 @@ public class Plantonista implements Serializable{
 	private String nome;
 	private String telefone;
 	private String lotacao;
+	private ArrayList<Notificacao> notificacoes;
 	
 	
 	public Integer getId() {
@@ -40,6 +48,32 @@ public class Plantonista implements Serializable{
 	}
 	public void setLotacao(String lotacao) {
 		this.lotacao = lotacao;
+	}
+	public ArrayList<Notificacao> getNotificacoes() {
+		return notificacoes;
+	}
+	
+	@Override
+	public Plantonista criarPojo(ResultSet rs) throws SQLException {
+		ArrayList<Notificacao> notificacoes;
+		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("plantonista", this.id);
+
+			NotificacaoDao notificacaoDao;
+			try {
+				notificacaoDao = new NotificacaoDao();
+			} catch (DaoException e) {
+				e.printStackTrace();
+				throw new SQLException("erro ao criar Plantonista ");
+			}
+			
+		this.id = rs.getInt("id");
+		this.lotacao = rs.getString("lotacao");
+		this.nome = rs.getString("nome");
+		this.telefone = rs.getString("telefone");
+		this.notificacoes = notificacaoDao.findBy(mapa);
+		
+		return this;
 	}
 
 	

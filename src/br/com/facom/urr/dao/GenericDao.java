@@ -1,31 +1,34 @@
 package br.com.facom.urr.dao;
 
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.lang.reflect.ParameterizedType;
 
 import br.com.facom.urr.dao.iface.Entidade;
-import br.com.facom.urr.dao.iface.*;
-import br.com.facom.urr.entidades.Paciente;
+import br.com.facom.urr.dao.iface.IGenericDao;
 import exception.DaoException;
 
+public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 
-public class GenericDao<T> implements IGenericDao<T>{
-	
 	private static Connection connection;
-	private static Statement st;
+	private static PreparedStatement st;
+	private static Statement stm;
 	private static ResultSet rs;
-	protected static String banco = "jdbc:sqlite:/home/rtsouza/git/urrFacom2016/URR.sqlite";
+	protected static String banco = "jdbc:sqlite:C:\\Users\\Tayron\\git\\urrFacom2016\\URR.sqlite";
 	private Class<T> persistentClass;
-	
-	 
-	public GenericDao(String base) throws  DaoException{
+	private T obj;
+
+	public GenericDao(String base) throws DaoException {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection(base);
@@ -33,54 +36,194 @@ public class GenericDao<T> implements IGenericDao<T>{
 		} catch (ClassNotFoundException | SQLException e) {
 			throw new DaoException(e.getMessage());
 		}
-		
+
+	}
+
+	public GenericDao()throws DaoException{
+		try {
+			connection = DriverManager.getConnection(banco);
+			this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DaoException(e.getMessage());
+		}
+	
 	}
 
 	@Override
 	public ArrayList<T> all() throws SQLException {
-		st = connection.createStatement();
-		rs = st.executeQuery("Select * from "+persistentClass.getSimpleName());
-		ArrayList<T> resultado = new ArrayList<>();
-		
+		stm = connection.createStatement();	
+		rs = stm.executeQuery("Select * from " + persistentClass.getSimpleName());
+		ArrayList<T> retorno = new ArrayList<>();
+
 		while (rs.next()) {
+			try {
+				obj = persistentClass.newInstance();
+				ResultSetMetaData metaData = rs.getMetaData();
+				retorno.add(obj.criarPojo(rs));
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+				throw new SQLException();
+			}
 			
-			resultado.add((T) rs.getMetaData().unwrap(Entidade.class));
+		}
+		stm.close();
+		return retorno;
+	}
+
+	@Override
+	public ArrayList<T> findBy(Map<String, Object> parametros) throws SQLException {
+		stm = connection.createStatement();	
+		String sql = "Select * from " + persistentClass.getSimpleName() + " where ";
+		Iterator key = parametros.keySet().iterator();
+		ArrayList<T> retorno = new ArrayList<>();
+		while (key.hasNext()) {
+			Object obj = key.next();
+			sql += obj.toString() + " = " + parametros.get(obj.toString());
+			sql += " and ";
+		}
+		sql = sql.substring(0, sql.length() - 4);
+		rs = stm.executeQuery(sql);
+		while (rs.next()) {
+			try {
+				obj = persistentClass.newInstance();
+				ResultSetMetaData metaData = rs.getMetaData();
+				retorno.add(obj.criarPojo(rs));
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+				throw new SQLException();
+			}
+		
+		}
+		stm.close();
+		return retorno;
+	}
+
+	@Override
+	public boolean insert(Map<String, Object> valores) {
+		try {
+			Iterator key = valores.keySet().iterator();
+			String sql = "";
+			String parametros = "", values="";
+			String[] keys = new String[valores.size()];
+
+			for (int i = 0; i < keys.length; i++) {
+				Object obj = key.next();
+				parametros += obj.toString()+" , ";
+				values += " ? , ";
+				keys[i] = obj.toString();
+			}
+			parametros = parametros.substring(0, parametros.length() - 2);
+			values = values.substring(0, values.length() - 2);
+			sql = "insert into "+persistentClass.getSimpleName()+ " ( "+parametros+")\n"
+					+ "values ("+values+")";
+			
+			st = connection.prepareStatement(sql);
+			for (int i = 0 ; i < valores.size(); i++) {
+				st.setObject(i+1, valores.get(keys[i]));
+			}
+			st.execute();
+			st.close();
+				   
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean remove(Map<String, Object> valores) {
+		Iterator key = valores.keySet().iterator();
+		String sql = "";
+		String parametros = "";
+		for (int i = 0; i < valores.size(); i++) {
+			Object obj = key.next();
+			parametros += obj+" = ? ";
+			if (i+1 != valores.size()) {
+				parametros += " and ";
+			}
 		}
 		
-		return resultado;
-	}
-	
-	
-
-
-	@Override
-	public <C, V> ArrayList<T> findBy(Map<C, V> parametros) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <C, V> boolean insert(Map<C, V> valores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public <C, V> boolean remove(Map<C, V> valores) {
-		// TODO Auto-generated method stub
-		return false;
+		sql = "delete from "+persistentClass.getSimpleName()+" where "+ parametros;
+		try {
+			
+			
+			st = connection.prepareStatement(sql);
+			key = valores.keySet().iterator();
+			for (int i = 0; i < valores.size(); i++) {
+				st.setObject(i+1, valores.get(key.next()));
+			}
+			
+			st.execute();
+			
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	@Override
-	public <C, V> boolean update(Map<C, V> valores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
-	public static void main(String [] args) throws DaoException, SQLException{
-		GenericDao<Paciente> dao = new GenericDao<Paciente>(banco){};
-		dao.all();
+	public boolean update(Map<String, Object> valores, Map<String, Object> atualizar) {
+		Iterator key;
+		String sql = "";
+		String parametros = "";
+		String atualiza = "";
 		
+		key = valores.keySet().iterator();
+		for (int i = 0; i < valores.size(); i++) {
+			parametros += key.next()+" = ? ";
+			if (i+1 != valores.size()) {
+				parametros += " and ";
+			}
+		}
+		
+		key = atualizar.keySet().iterator();
+		for (int i = 0; i < atualizar.size(); i++) {
+			atualiza += key.next()+" = ? ";
+			if (i+1 != valores.size()) {
+				atualiza += " , ";
+			}
+		}
+		
+		sql = "update "+persistentClass.getSimpleName()+" \n"
+				+ "set "+ atualiza + " \n"
+				+ "where "+parametros;
+		try {
+			
+			
+			st = connection.prepareStatement(sql);
+			key = atualizar.keySet().iterator();
+			
+			int cont = atualizar.size();
+			for (int i = 0; i < atualizar.size(); i++) {
+				st.setObject(i+1, atualizar.get(key.next()));
+			}
+			
+			key = valores.keySet().iterator();
+			for (int i = 0; i < valores.size(); i++) {
+				st.setObject(cont+1, valores.get(key.next()) );
+			}
+			
+			st.execute();
+			
+			st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	
 	}
+
+	@Override
+	public T findById(Integer id) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", id);
+		return this.findBy(map).get(0);
+	}
+
 }

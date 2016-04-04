@@ -4,8 +4,18 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 
-public class Notificacao implements Serializable{
+import javax.swing.plaf.basic.BasicTreeUI.TreeHomeAction;
+
+import br.com.facom.urr.dao.GenericDao;
+import br.com.facom.urr.dao.PacienteDao;
+import br.com.facom.urr.dao.PlantonistaDao;
+import br.com.facom.urr.dao.UpaCrsDao;
+import br.com.facom.urr.dao.iface.Entidade;
+import exception.DaoException;
+
+public class Notificacao implements Entidade{
 
 	/**
 	 * 
@@ -64,10 +74,31 @@ public class Notificacao implements Serializable{
 	}
 	
 	
+	@Override
+	public Notificacao criarPojo(ResultSet rs) throws SQLException {
+		PacienteDao pacienteDao;
+		PlantonistaDao plantonistaDao;
+		UpaCrsDao upaCrsDao;
+		try {
+			pacienteDao = new PacienteDao();
+			plantonistaDao = new PlantonistaDao();
+			upaCrsDao = new UpaCrsDao();
+		} catch (DaoException e) {
+			throw new SQLException(" erro ao criar objeto Notificação ");
+		}
+		
+		
+		this.id = rs.getInt("id");
+		this.data = rs.getDate("data");
+		this.tipo = rs.getString("tipo");
+		this.historico = rs.getString("historico");
+		this.paciente = pacienteDao.findById(rs.getInt("paciente"));
+		this.plantonista = plantonistaDao.findById(rs.getInt("plantonista"));
+		this.upaCrs = upaCrsDao.findById(rs.getInt("upaCrs"));
+		
+		return this;
+	}
 
-	
-	/*getters and setters*/
-	
 	
 
 }

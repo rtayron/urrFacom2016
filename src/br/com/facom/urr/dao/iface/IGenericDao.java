@@ -1,5 +1,6 @@
 package br.com.facom.urr.dao.iface;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +8,17 @@ import java.util.Map;
 
 public interface IGenericDao<T> {
 		
-		public List<T> all() throws SQLException;
+		public ArrayList<T> all() throws SQLException;
 		
-		public<C,V> ArrayList<T> findBy(Map<C,V> parametros)throws SQLException;
+		public ArrayList<T> findBy(Map<String,Object> parametros)throws SQLException;
 		
-		public<C,V> boolean insert(Map<C,V> valores);
+		public boolean insert(Map<String,Object> valores);
 	   
-		public<C,V> boolean remove(Map<C,V> valores);
+		public boolean remove(Map<String,Object> valores);
 	   
-		public<C,V> boolean update(Map<C,V> valores);
+		public boolean update(Map<String,Object> valores, Map<String,Object> atualizar);
+		
+		//não pedido, mas para facilitar a vida :)
+		public T findById(Integer id) throws SQLException ;
 	    
 }

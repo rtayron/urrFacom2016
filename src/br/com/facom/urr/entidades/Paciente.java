@@ -1,9 +1,18 @@
 package br.com.facom.urr.entidades;
 
 
-import java.util.Date;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import br.com.facom.urr.dao.NotificacaoDao;
 import br.com.facom.urr.dao.iface.Entidade;
+import exception.DaoException;
+
 
 public class Paciente implements Entidade{
 
@@ -20,6 +29,7 @@ public class Paciente implements Entidade{
 	private Date dataNascimento;
 	private String telefone;
 	private String numeroProntuario;
+	private ArrayList<Notificacao> notificacoes;
 	
 	public Paciente(){	
 	}
@@ -30,14 +40,6 @@ public class Paciente implements Entidade{
 		this.rg = rg;
 		this.cpf = cpf;
 	}
-	
-//	public Paciente(ResultSet rs) throws SQLException{
-//		this.id = rs.getInt("id");
-//		this.cpf = rs.getString("cpf");
-//		this.dataNascimento = rs.getDate("dataNascimento");
-//		this.telefone = rs.getString("telefone");
-//		this.numeroProntuario = rs.getString("numeroProntuario");
-//	}
 
 	public Integer getId() {
 		return id;
@@ -88,8 +90,44 @@ public class Paciente implements Entidade{
 	public void setNumeroProntuario(String numeroProntuario) {
 		this.numeroProntuario = numeroProntuario;
 	}
+	
+	public ArrayList<Notificacao> getNotificacoes() {
+		return notificacoes;
+	}
 
+	@Override
+	public Paciente criarPojo(ResultSet rs) throws SQLException {
+		ArrayList<Notificacao> notificacoes;
+		Map<String, Object> mapa = new HashMap<String, Object>();
+		mapa.put("paciente", this.id);
 
+			NotificacaoDao notificacaoDao;
+			try {
+				notificacaoDao = new NotificacaoDao();
+			} catch (DaoException e) {
+				e.printStackTrace();
+				throw new SQLException("erro ao criar Paciente ");
+			}
+		
+			this.setId(rs.getInt("id"));
+			this.setCpf(rs.getString("cpf"));
+			this.setDataNascimento(rs.getDate("dataNascimento"));
+			this.setEndereco(rs.getString("endereco"));
+			this.setNome(rs.getString("nome"));
+			this.setNumeroProntuario(rs.getString("numeroProntuario"));
+			this.setTelefone(rs.getString("telefone"));
+			this.notificacoes = notificacaoDao.findBy(mapa);
+
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "Paciente [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", rg=" + rg + ", endereco=" + endereco
+				+ ", dataNascimento=" + dataNascimento + ", telefone=" + telefone + ", numeroProntuario="
+				+ numeroProntuario + "]";
+	}
+	
 	
 
 }
