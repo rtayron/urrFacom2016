@@ -48,8 +48,9 @@ public class UpaCrsControler extends HttpServlet {
 	   } else if (acao.equals("remove")){
 		   
 	   }
-	  
    }
+	
+
 	
 	
 	private void returnErro(PrintWriter out ){
@@ -66,7 +67,7 @@ public class UpaCrsControler extends HttpServlet {
 			 	out = response.getWriter();
 				ArrayList<UpaCrs> upas = new UpaCrsDao().all();
 				request.setAttribute("upas", upas);
-				RequestDispatcher rd = request.getRequestDispatcher("/site/upaCrs.jsp");		   
+				RequestDispatcher rd = request.getRequestDispatcher("/site/upaCrs.jsp");
 				rd.forward(request,response);
 			} catch (SQLException | DaoException | IOException | ServletException e) {
 				e.printStackTrace();

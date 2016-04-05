@@ -1,14 +1,9 @@
 package br.com.facom.urr.entidades;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
 
-import javax.swing.plaf.basic.BasicTreeUI.TreeHomeAction;
-
-import br.com.facom.urr.dao.GenericDao;
 import br.com.facom.urr.dao.PacienteDao;
 import br.com.facom.urr.dao.PlantonistaDao;
 import br.com.facom.urr.dao.UpaCrsDao;
@@ -84,7 +79,7 @@ public class Notificacao implements Entidade{
 			plantonistaDao = new PlantonistaDao();
 			upaCrsDao = new UpaCrsDao();
 		} catch (DaoException e) {
-			throw new SQLException(" erro ao criar objeto Notificação ");
+			throw new SQLException(" erro ao criar objeto NotificaÃ§Ã£o ");
 		}
 		
 		

@@ -52,8 +52,7 @@ public class UpaCrs implements Entidade{
 	public UpaCrs criarPojo(ResultSet rs) throws SQLException {
 		ArrayList<Notificacao> notificacoes;
 		Map<String, Object> mapa = new HashMap<String, Object>();
-		mapa.put("upaCrs", this.id);
-
+		
 			NotificacaoDao notificacaoDao;
 			try {
 				notificacaoDao = new NotificacaoDao();
@@ -65,6 +64,8 @@ public class UpaCrs implements Entidade{
 		this.id = rs.getInt("id");
 		this.endereco = rs.getString("endereco");
 		this.telefone = rs.getString("telefone");
+		
+		mapa.put("upaCrs", this.id);
 		this.notificacoes = notificacaoDao.findBy(mapa);
 		
 

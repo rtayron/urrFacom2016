@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/URR/css/bootstrap.min.css">
 </head>
 <body>
 	<c:import url="/site/menu.jsp"/>
@@ -69,18 +69,7 @@
  
      </div>
  </div>
-<div id="bottom" class="row">
-    <div class="col-md-12">
-         
-        <ul class="pagination">
-            <li class="disabled"><a>&lt; Anterior</a></li>
-            <li class="disabled"><a>1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li class="next"><a href="#" rel="next">Próximo &gt;</a></li>
-        </ul><!-- /.pagination -->
- 
-    </div>
+
 	</div>
 		<h3 class="page-header">Lista de Upas Crs</h3>
 	</div>

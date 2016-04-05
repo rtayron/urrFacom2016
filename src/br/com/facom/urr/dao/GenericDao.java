@@ -20,11 +20,9 @@ import exception.DaoException;
 
 public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 
-	private static Connection connection;
-	private static PreparedStatement st;
-	private static Statement stm;
-	private static ResultSet rs;
-	protected static String banco = "jdbc:sqlite:C:\\Users\\Tayron\\git\\urrFacom2016\\URR.sqlite";
+	private Connection connection;
+	protected static String banco = "jdbc:sqlite:/home/rtsouza/git/urrFacom2016/URR.sqlite";
+//	protected static String banco = "jdbc:sqlite:C:\\Users\\Tayron\\git\\urrFacom2016\\URR.sqlite";
 	private Class<T> persistentClass;
 	private T obj;
 
@@ -52,15 +50,15 @@ public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 	}
 
 	@Override
-	public ArrayList<T> all() throws SQLException {
-		stm = connection.createStatement();	
-		rs = stm.executeQuery("Select * from " + persistentClass.getSimpleName());
+	public ArrayList<T> all() throws SQLException {		
+		PreparedStatement st = this.connection.prepareStatement("Select * from " + persistentClass.getSimpleName());
+		ResultSet rs = st.executeQuery();
+		
 		ArrayList<T> retorno = new ArrayList<>();
 
 		while (rs.next()) {
 			try {
 				obj = persistentClass.newInstance();
-				ResultSetMetaData metaData = rs.getMetaData();
 				retorno.add(obj.criarPojo(rs));
 			} catch (InstantiationException | IllegalAccessException e) {
 				e.printStackTrace();
@@ -68,13 +66,13 @@ public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 			}
 			
 		}
-		stm.close();
+		st.close();
 		return retorno;
 	}
 
 	@Override
 	public ArrayList<T> findBy(Map<String, Object> parametros) throws SQLException {
-		stm = connection.createStatement();	
+		Statement stm = connection.createStatement();	
 		String sql = "Select * from " + persistentClass.getSimpleName() + " where ";
 		Iterator key = parametros.keySet().iterator();
 		ArrayList<T> retorno = new ArrayList<>();
@@ -84,7 +82,7 @@ public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 			sql += " and ";
 		}
 		sql = sql.substring(0, sql.length() - 4);
-		rs = stm.executeQuery(sql);
+		ResultSet rs = stm.executeQuery(sql);
 		while (rs.next()) {
 			try {
 				obj = persistentClass.newInstance();
@@ -119,7 +117,7 @@ public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 			sql = "insert into "+persistentClass.getSimpleName()+ " ( "+parametros+")\n"
 					+ "values ("+values+")";
 			
-			st = connection.prepareStatement(sql);
+			PreparedStatement st = connection.prepareStatement(sql);
 			for (int i = 0 ; i < valores.size(); i++) {
 				st.setObject(i+1, valores.get(keys[i]));
 			}
@@ -150,7 +148,7 @@ public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 		try {
 			
 			
-			st = connection.prepareStatement(sql);
+			PreparedStatement st = connection.prepareStatement(sql);
 			key = valores.keySet().iterator();
 			for (int i = 0; i < valores.size(); i++) {
 				st.setObject(i+1, valores.get(key.next()));
@@ -195,7 +193,7 @@ public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 		try {
 			
 			
-			st = connection.prepareStatement(sql);
+			PreparedStatement st = connection.prepareStatement(sql);
 			key = atualizar.keySet().iterator();
 			
 			int cont = atualizar.size();

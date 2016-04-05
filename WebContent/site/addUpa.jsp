@@ -14,18 +14,18 @@
 	<%@include file="/site/menu.jsp"%>
 	<div id="main" class="container">
 		<h3 class="page-header">Adicionar Upa Crs</h3>
-		<form action="/URR/UpaCrs?logica=salvar">
+		<form action="/URR/UpaCrs">
 			<div class="row">
 				<div class="form-group col-md-6">
 					<label for="endereco">Endereço</label> 
-					<input type="text" class="form-control" id="endereco">
+					<input type="text" class="form-control" name="endereco">
 				</div>
 
 				<div class="form-group col-md-2">
 					<label for="telefone">Telefone</label>
-					<input type="text" class="form-control" id="telefone" >
+					<input type="text" class="form-control" name="telefone" >
 				</div>
-
+				<input type="hidden" name="logica" value="salvar" />  
 			</div>
 			<hr />
 			<div id="actions" class="row">
