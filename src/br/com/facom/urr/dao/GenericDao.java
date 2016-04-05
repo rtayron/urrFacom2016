@@ -41,9 +41,10 @@ public class GenericDao<T extends Entidade> implements IGenericDao<T> {
 
 	public GenericDao()throws DaoException{
 		try {
+			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection(banco);
 			this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new DaoException(e.getMessage());
 		}
