@@ -41,9 +41,6 @@
 	<script type="text/javascript" src="/URR/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/URR/js/jquery.mask.min.js"></script>
 	<script type="text/javascript">
-	$('#telefone').focus(function(){
-		$('#telefone').mask("(99) 9999-9999");
-	})
 	
 	</script>
 </body>

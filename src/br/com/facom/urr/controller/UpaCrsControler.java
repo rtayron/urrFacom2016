@@ -33,25 +33,28 @@ public class UpaCrsControler extends HttpServlet {
 		   RequestDispatcher rd = request.getRequestDispatcher("/site/addUpa.jsp");
 		   rd.forward(request,response);  	
 	   } else if (acao.equals("salvar")){
-		   try {
+		  salvarDoc(request, response);
+	   } else if (acao.equals("remove")){
+		   System.out.println(request.getParameter("id"));
+	   }
+   }
+	
 
+	private void salvarDoc(HttpServletRequest request, HttpServletResponse response){
+		PrintWriter out = null;
+		try {
+			  out = response.getWriter();
 			   HashMap<String, Object> valores = new HashMap<String, Object>();
 			   valores.put("endereco", request.getParameter("endereco"));
 			   valores.put("telefone", request.getParameter("telefone"));
 			   
 			   new UpaCrsDao().insert(valores);
 			   this.listar(request, response);
-		   } catch (DaoException e) {
+		   } catch (DaoException | IOException e) {
 			e.printStackTrace();
 			returnErro(out);
 		   	}
-	   } else if (acao.equals("remove")){
-		   
-	   }
-   }
-	
-
-	
+	}
 	
 	private void returnErro(PrintWriter out ){
 		out.println("<div class=\"alert alert-danger\">"
@@ -69,6 +72,7 @@ public class UpaCrsControler extends HttpServlet {
 				request.setAttribute("upas", upas);
 				RequestDispatcher rd = request.getRequestDispatcher("/site/upaCrs.jsp");
 				rd.forward(request,response);
+				
 			} catch (SQLException | DaoException | IOException | ServletException e) {
 				e.printStackTrace();
 				this.returnErro(out);
