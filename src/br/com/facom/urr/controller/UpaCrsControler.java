@@ -35,7 +35,8 @@ public class UpaCrsControler extends HttpServlet {
 	   } else if (acao.equals("salvar")){
 		  salvarDoc(request, response);
 	   } else if (acao.equals("remove")){
-		   System.out.println(request.getParameter("id"));
+		   String id = request.getParameter("id");
+		   System.out.println(id);
 	   }
    }
 	
